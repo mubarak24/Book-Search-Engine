@@ -38,26 +38,24 @@ const resolvers = {
       return { token, user };
     },  
 
-    login: async (_, { loginInput }) => {
-      const { usernameOrEmail, password } = loginInput;
-
+    login: async (_, { email, password }) => {
       const user = await User.findOne({
-        $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+        $or: [{ username: email }, { email }],
       });
-
+    
       if (!user) {
         throw new Error("Can't find a user with this username or email!");
       }
-
+    
       const correctPw = await user.isCorrectPassword(password);
-
+    
       if (!correctPw) {
         throw new Error('Invalid password!');
       }
-
+    
       const token = signToken(user);
       return { token, user };
-    },
+    },    
 
     saveBook: async (_, { bookInput }, { user }) => {
       if (!user) {
