@@ -19,33 +19,39 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+  
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setValidated(true); // Set the form validation state to show validation errors
+      return;
     }
-
+  
     try {
       const { data } = await addUser({
-        variables: { ...userFormData },
+        variables: {
+          username: userFormData.username,
+          email: userFormData.email,
+          password: userFormData.password,
+        },
       });
-
+  
       const { token, user } = data.addUser;
-
+  
       Auth.login(token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
-
+  
     setUserFormData({
       username: '',
       email: '',
       password: '',
     });
     setValidated(false); // Reset the form validation state
-  };
+  };  
 
   return (
     <>

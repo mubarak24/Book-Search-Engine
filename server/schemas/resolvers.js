@@ -25,16 +25,18 @@ const resolvers = {
   },
 
   Mutation: {
-    addUser: async (_, { userInput }) => {
+    addUser: async (_, { username, email, password }) => {
+      const userInput = { username, email, password };
+  
       const user = await User.create(userInput);
-
+  
       if (!user) {
         throw new Error('Something went wrong while creating the user!');
       }
-
+  
       const token = signToken(user);
       return { token, user };
-    },
+    },  
 
     login: async (_, { loginInput }) => {
       const { usernameOrEmail, password } = loginInput;
