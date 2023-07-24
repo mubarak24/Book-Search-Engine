@@ -57,15 +57,14 @@ const resolvers = {
       return { token, user };
     },  
     
-    saveBook: async (_, { bookData }, { user }) => {
-      if (!user) {
+    saveBook: async (_, { bookData }, context ) => {
+      if (!context.user) {
         throw new AuthenticationError('Authentication required!');
       }
-
       try {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: user._id },
-          { $addToSet: { savedBooks: bookData } }, // Use bookData instead of bookInput
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: bookData } }, 
           { new: true, runValidators: true }
         );
 

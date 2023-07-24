@@ -65,11 +65,9 @@ const SearchBooks = () => {
 
     try {
       const { data } = await saveBook({
-        variables: { bookData: { ...bookToSave } },
-        refetchQueries: [{ query: GET_ME }], // Refetch the user data after saving a book
+        variables: { bookData: { ...bookToSave } }
       });
-
-      if (data.saveBook) {
+      if (data.savedBooks) {
         // Update local storage with the saved book ID
         const updatedSavedBookIds = [...savedBookIds, bookId];
         client.writeQuery({
