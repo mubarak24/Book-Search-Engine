@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useApolloClient } from '@apollo/client'; 
+import { useMutation, useApolloClient } from '@apollo/client';
 import Auth from '../utils/auth';
 
 import {
@@ -14,6 +14,7 @@ import {
 import { searchGoogleBooks } from '../utils/API';
 import { getSavedBookIds } from '../utils/localStorage';
 import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
 const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
@@ -64,7 +65,8 @@ const SearchBooks = () => {
 
     try {
       const { data } = await saveBook({
-        variables: { bookData: { ...bookToSave } }
+        variables: { bookData: { ...bookToSave } },
+        refetchQueries: [{ query: GET_ME }], // Refetch the user data after saving a book
       });
 
       if (data.saveBook) {
@@ -72,7 +74,7 @@ const SearchBooks = () => {
         const updatedSavedBookIds = [...savedBookIds, bookId];
         client.writeQuery({
           query: SAVE_BOOK,
-          variables: { savedBookIds: updatedSavedBookIds }
+          variables: { savedBookIds: updatedSavedBookIds },
         });
       }
     } catch (err) {
@@ -116,7 +118,7 @@ const SearchBooks = () => {
         <Row>
           {searchedBooks.map((book) => {
             return (
-              <Col md="4">
+              <Col key={book.bookId} md="4">
                 <Card key={book.bookId} border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
