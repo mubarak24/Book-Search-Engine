@@ -75,23 +75,28 @@ const resolvers = {
       }
     },
 
-    deleteBook: async (_, { bookId }, { user }) => {
-      if (!user) {
+    deleteBook: async (_, { bookId }, context) => {
+      if (!context.user) {
         throw new AuthenticationError('Authentication required!');
       }
-
-      const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id },
-        { $pull: { savedBooks: { bookId } } },
-        { new: true }
-      );
-
-      if (!updatedUser) {
-        throw new Error("Couldn't find user with this id!");
+    
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: { bookId } } },
+          { new: true }
+        );
+    
+        if (!updatedUser) {
+          throw new Error("Couldn't find user with this id!");
+        }
+    
+        return updatedUser;
+      } catch (err) {
+        console.log(err);
+        throw new Error('Failed to delete the book.');
       }
-
-      return updatedUser;
-    },
+    },    
   },
 };
 
