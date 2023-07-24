@@ -25,7 +25,7 @@ const resolvers = {
   },
 
   Mutation: {
-    createUser: async (_, { userInput }) => {
+    addUser: async (_, { userInput }) => {
       const user = await User.create(userInput);
 
       if (!user) {
