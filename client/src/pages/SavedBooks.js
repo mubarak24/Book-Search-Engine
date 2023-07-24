@@ -31,15 +31,14 @@ const SavedBooks = () => {
         variables: { bookId: bookId }
       });
 
-      if (data.removeBook) {
+      if (data.deleteBook) {
         removeBookId(bookId);
 
         // Update local cache after removing the book
-        const userData = client.readQuery({ query: GET_ME });
         const updatedUserData = {
           me: {
-            ...userData.me,
-            savedBooks: userData.me.savedBooks.filter((book) => book.bookId !== bookId)
+            ...data.me,
+            savedBooks: data.me.savedBooks.filter((book) => book.bookId !== bookId)
           }
         };
         client.writeQuery({ query: GET_ME, data: updatedUserData });
