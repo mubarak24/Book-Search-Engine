@@ -37,8 +37,8 @@ const SavedBooks = () => {
         // Update local cache after removing the book
         const updatedUserData = {
           me: {
-            ...data.me,
-            savedBooks: data.me.savedBooks.filter((book) => book.bookId !== bookId)
+            ...data.deleteBook, // The mutation returns the updated user data
+            savedBooks: data.deleteBook.savedBooks.filter((book) => book.bookId !== bookId)
           }
         };
         client.writeQuery({ query: GET_ME, data: updatedUserData });
